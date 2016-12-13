@@ -147,24 +147,6 @@ scene.add(spotLight);
 //geometry
 
 
-var geometry = new THREE.Geometry();
-
-geometry.vertices.push(
-	new THREE.Vector3( -0.5,  0.5, 0 ),
-	new THREE.Vector3( -0.5, -0.5, 0 ),
-	new THREE.Vector3(  0.5, -0.5, 0 ),
-  new THREE.Vector3(  0.5, -0.5, 1 ),
-  new THREE.Vector3(  -0.5, 0.5, 1 ),
-  new THREE.Vector3(  -0.5, -0.5, 1 )
-);
-
-geometry.faces.push( new THREE.Face3( 0, 1, 2 ),new THREE.Face3( 3, 4, 5 ),new THREE.Face3( 2, 1, 5 ) );
-
-geometry.computeBoundingSphere();
-var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-var mesh = new THREE.Mesh( geometry, material ) ;
-mesh.position.x=4
-scene.add( mesh );
 
 
 
