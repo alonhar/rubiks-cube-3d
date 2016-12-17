@@ -266,6 +266,8 @@ class Cube3d {
      }
 
      solve(){
+
+
        var move = this.solution.splice(0, 1)[0];
        if(!move){return}
        this.rubikscube = this.cubeMatFromObj(this.cube.move(move))
@@ -283,7 +285,7 @@ class Cube3d {
            dir *= -1;
        }
 
-
+     this.solveStart=true;
        //0 back
        //1 front
        //2 down

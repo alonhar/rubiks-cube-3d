@@ -5,7 +5,7 @@ for (var i = 0; i < numberOfCubes; i++) {
     let cube = new Cube3d(randomCube, scene);
     cubes.push(cube)
     cube.drawTheCube();
-    cube.group.position.x = (i % 2) * 5 - (i % 2) * 10;
+    cube.group.position.x = (i % 2) * 5 - (i % 2) * 10+ 3;
     cube.group.position.y = (i % 3) * 5 - (i % 3) * 10 + 5;
     if (i == 5) {
         cube.group.rotation.x += Math.PI * (i / 2)
@@ -26,5 +26,22 @@ scene.render();
 
 
 window.addEventListener("keypress", function() {
-    cubes.forEach(cube => cube.solve.bind(cube)())
+
+    cubes.forEach(cube =>{if(!cube.solveStart)cube.solve.bind(cube)();})
+
 }, false);
+
+window.addEventListener("touchstart", function() {
+  startTime = new Date();
+}, false);
+
+
+  window.addEventListener("touchend", function() {
+    endTime = new Date();
+    if(endTime-startTime<100){
+      if(this.solveStart == true){
+        return;
+      }
+      cubes.forEach(cube =>{if(!cube.solveStart)cube.solve.bind(cube)();})
+    }
+  }, false);
