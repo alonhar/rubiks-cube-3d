@@ -19,9 +19,9 @@ class Scene{
         this.controls.target.set(0, 0, 0)
         this.controls.zoomSpeed=0.1
 
-        this.camera.position.z = 10;
-        this.camera.position.x = 10;
-        this.camera.position.y = 10;
+        this.camera.position.z = 15;
+        this.camera.position.x = 1;
+        this.camera.position.y = 1;
 
         this.renderer = new THREE.WebGLRenderer({
             antialias: true

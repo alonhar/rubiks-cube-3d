@@ -80,23 +80,29 @@ class Cube3d {
           dir: "-1",
           axis: "y"
       };
+      this.rotation={};
       this.empty = false;
         this.group = new THREE.Group();
-        this.modifier = new THREE.SubdivisionModifier(2);
+        this.modifier = new THREE.SubdivisionModifier(1);
         this.cube = cube.clone();
         this.rubikscube = this.cubeMatFromObj(randomCube)
-        Cube.asyncInit('lib/worker.js', () =>{
-            // Initialized
 
-            Cube._asyncSolve(cube, (algorithm)=> {
-                this.solution = algorithm;
-                this.solution = this.solution.split(" ");
-                console.log("yeee")
-            });
-        });
 
     }
+    cubeSolution(cb){
+      Cube.asyncInit('lib/worker.js', () =>{
+          // Initialized
 
+          Cube._asyncSolve(this.cube, (algorithm)=> {
+
+              this.solution = algorithm;
+              this.solution = this.solution.split(" ");
+              cb(this.solution);
+              console.log("yee")
+          });
+      });
+
+    }
 
     cubeMatFromObj() {
         var cubeStr = this.cube.asString()
@@ -136,21 +142,21 @@ class Cube3d {
 
 
          this.flipObj.axis = axisProperty[n].p
-         var blocksInSide = this.getSideFromGroup(n, this.rubikGroup, true);
-         // console.log(blocksInSide)
-         var sideToFlip = new THREE.Object3D();
-         blocksInSide.forEach(mesh => {
+         var blocksInface = this.getfaceFromGroup(n, this.rubikGroup, true);
+         // console.log(blocksInface)
+         var faceToFlip = new THREE.Object3D();
+         blocksInface.forEach(mesh => {
 
              this.rubikGroup.remove(mesh);
-             sideToFlip.add(mesh);
+             faceToFlip.add(mesh);
          });
 
          this.pivot = new THREE.Object3D();
-         //  pivot.add(sideToFlip)
+         //  pivot.add(faceToFlip)
 
 
 
-         this.pivot.add(sideToFlip)
+         this.pivot.add(faceToFlip)
 
          this.rubikGroup.add(this.pivot);
          this.flipObj.startFlip = true;
@@ -192,7 +198,7 @@ class Cube3d {
          }
          this.rubikscube.forEach((colors, i) => {
 
-             var faces = this.getSideFromGroup(i, this.rubikGroup);
+             var faces = this.getfaceFromGroup(i, this.rubikGroup);
 
              colors.forEach((color, i) => {
                  drawBlock(color, faces[i]);
@@ -210,7 +216,7 @@ class Cube3d {
 
 
      }
-     getSideFromGroup(n, group, blocks) {
+     getfaceFromGroup(n, group, blocks) {
 
          var obj = axisProperty[n];
          if (blocks) {
@@ -230,8 +236,9 @@ class Cube3d {
      }
      render(){
 
-       this.rubikGroup.rotation.x += 0.001;
-       this.rubikGroup.rotation.y += 0.001;
+
+       this.rubikGroup.rotation.x += 0.00001;
+       this.rubikGroup.rotation.y += 0.00001;
        if (this.empty) {
            var rotationXcube = this.rubikGroup.rotation.x;
            var rotationYcube = this.rubikGroup.rotation.y;
@@ -327,21 +334,43 @@ class Cube3d {
         var scene = new Scene();
 
         var cubes = [];
-        var numberOfCubes=5;
+        var numberOfCubes=6;
         for (var i=0;i<numberOfCubes;i++){
+
               let cube = new Cube3d(randomCube,scene);
+
               cubes.push(cube)
               cube.drawTheCube();
-                cube.group.position.x = (2*i-numberOfCubes+1)/2*5 ;
+                cube.group.position.x = (i%2)*5-(i%2)*10;
+                    cube.group.position.y  = (i%3)*5-(i%3)*10+5;
+                    console.log(    cube.group.position.y)
+                if (i==5){
+                    // cube.group.position.x = (2*i-numberOfCubes+1)/2*5 ;
+                    // cube.group.rotation.y=Math.PI*i/2
+                    cube.group.rotation.x+=Math.PI*(i/2)
 
-              scene.addRender(cube)
+                }else if (i==4){
+                  // cube.group.position.x = (2*i-numberOfCubes+1)/2*5 ;
+                  // cube.group.rotation.y=Math.PI*i/2
+                  cube.group.rotation.x+=Math.PI*1.5
+
+
+                }else{
+
+
+                  cube.group.rotation.y=Math.PI*i/2
+
+                }
+                   scene.addRender(cube)
+
 
         }
-
+        cubes[0].cubeSolution(solution=>{
+          cubes.forEach(cube=>cube.solution=solution.slice())
+        })
 
         scene.render();
-        // arrow = new Arrow()
-        // scene.addRender(arrow)
+
 
 
 
